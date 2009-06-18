@@ -1,0 +1,15 @@
+I'm working on bringing the smarty templating engine to javascript (jQSmarty).
+
+Benefits of this is that you will have a client side templating engine. So as it uses the same engine as smarty (PHP), you can have a dual side templating engine. But with Jaxer there is no need for the server-side installation, so you can just use a single one.
+
+Benefits of basing it on Smarty is that it will work with current Smarty implementations, and will work alongside Smarty on legacy (non Jaxer) servers.
+
+The current version of jQSmarty is 0.1.0.0-dev, you can see it here:
+http://www.balupton.com/sandbox/jquery_smarty/
+It's not that usable right now, but supports some basic syntax/functions/modifiers, the core is nearly all done.
+
+So just making this post to find out if anyone else is interested in this? And if so, hopefully can help out with it's development.
+As well as to talk about other javascript templating engines.
+
+I have a more detailed explanation on how Jaxer is a silver bullet for templating here:
+http://www.balupton.com/blogs/dev?title=jaxer_the_silver_bullet
