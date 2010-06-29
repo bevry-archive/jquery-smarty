@@ -89,79 +89,68 @@
 	// More info: http://docs.jquery.com/Plugins/Authoring#Custom_Alias
 	
 	/**
-	 * Object to Array
-	 * @copyright Benjamin "balupton" Lupton (MIT Licenced)
-	 */
-	$.object_to_array = $.object_to_array || function(obj) {
-		// Prepare
-		var arr = [];
-		// Check
-		if ( typeof obj.length !== "number" ) {
-			return arr;
-		}
-		// Convert
-	    for(var i = 0; i < obj.length; i++) {
-	        arr.push(obj[i]);
-	    }
-		// Return
-		return arr;
-	}
-	
-	/**
 	 * Console Emulator
-	 * @depends $.object_to_array
 	 * @copyright Benjamin "balupton" Lupton (MIT Licenced)
+	 * We have to convert arguments into arrays, and do this explicitly as webkit hates function references, and arguments cannot be passed as is
 	 */
 	if ( typeof $.log === 'undefined' ) {
-		if ( !$.browser.safari && typeof window.console !== 'undefined' && typeof window.console.log === 'function' )
+		if ( typeof window.console !== 'undefined' && typeof window.console.log === 'function' )
 		{	// Use window.console
 			// Prepare
 			$.console = {};
 			// Log
-			if ( typeof window.console.log !== 'undefined' ) {
-				$.console.log = $.log = function(){
-				    window.console.log.apply(window.console, $.object_to_array(arguments));
-				}
-			}
+			$.console.log = $.log = function(){
+				var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+			    window.console.log.apply(window.console, $.object_to_array(arr));
+			};
 			// Debug
 			if ( typeof window.console.debug !== 'undefined' ) {
 				$.console.debug = function(){
-				    window.console.debug.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.debug.apply(window.console, $.object_to_array(arr));
+				};
 			} else {
 				$.console.debug = function(){
-				    window.console.log.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.log.apply(window.console, $.object_to_array(arr));
+				};
 			}
 			// Warn
 			if ( typeof window.console.warn !== 'undefined' ) {
 				$.console.warn = function(){
-				    window.console.warn.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.warn.apply(window.console, $.object_to_array(arr));
+				};
 			} else {
 				$.console.warn = function(){
-				    window.console.log.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.log.apply(window.console, $.object_to_array(arr));
+				};
 			}
 			// Error
 			if ( typeof window.console.error !== 'undefined' ) {
 				$.console.error = function(){
-				    window.console.error.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.error.apply(window.console, $.object_to_array(arr));
+				};
 			} else {
 				$.console.error = function(){
-				    window.console.log.apply(window.console, $.object_to_array(arguments));
-				}
+					var args = arguments;
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.log.apply(window.console, $.object_to_array(arr));
+				};
 			}
 			// Trace
 			if ( typeof window.console.trace !== 'undefined' ) {
 				$.console.trace = function(){
-				    window.console.trace.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.trace.apply(window.console, $.object_to_array(arr));
+				};
 			} else {
 				$.console.trace = function(){
-				    window.console.log.apply(window.console, $.object_to_array(arguments));
-				}
+					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
+				    window.console.log.apply(window.console, $.object_to_array(arr));
+				};
 			}
 		}
 		else
@@ -172,7 +161,7 @@
 			$.log = $.console.log = $.console.debug = $.console.warn = $.console.trace = function(){};
 			$.console.error = function(){
 				alert("An error has occured. Please use another browser to obtain more detailed information.");
-			}
+			};
 		}
 	}
 	
@@ -427,7 +416,7 @@
 				format = format || '';
 				precision = precision || 2;
 				// Sizes
-			    sizes = {
+			    var sizes = {
 					'TB':1099511627776,
 					'GB':1073741824,
 					'MB':1048576,
