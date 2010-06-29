@@ -1,7 +1,7 @@
 /**
  * jQuery Smarty Plugin (jQSmarty) - Smarty Templating Engine for jQuery
- * Copyright (C) 2008 Benjamin Arthur Lupton
- * http://plugins.jquery.com/project/jquery_smarty
+ * Copyright (C) 2008-2010 Benjamin Arthur Lupton
+ * http://github.com/balupton/jquery-smarty
  *
  * This file is part of jQuery Smarty Plugin (jQSmarty).
  * 
@@ -20,26 +20,32 @@
  *
  * @name jqsmarty: jquery.smarty.js
  * @package jQuery Smarty Plugin (jQSmarty)
- * @version 0.4.3-dev
- * @date May 17, 2008
+ * @version 0.5.0-dev
+ * @date June 29, 2010
  * @category jquery plugin
  * @author Benjamin "balupton" Lupton {@link http://www.balupton.com}
- * @copyright (c) 2008 Benjamin Arthur Lupton {@link http://www.balupton.com}
+ * @copyright (c) 2008-2010 Benjamin Arthur Lupton {@link http://www.balupton.com}
  * @license GNU Affero General Public License - {@link http://www.gnu.org/licenses/agpl.html}
- * @example Visit {@link http://jquery.com/plugins/project/jquery_smarty} for more information.
+ * @example Visit {@link http://github.com/balupton/jquery-smarty} for more information.
  * 
  * 
  * I would like to take this space to thank the wonderful contributors to the following projects:
  * - jQuery {@link http://jquery.com/}
  * - Smarty {@link http://www.smarty.net/}
  * - JSmarty {@link http://code.google.com/p/jsmarty/}
- * - PHP.JS {@link http://kevin.vanzonneveld.net/techblog/category/php2js/}
- * - DateJS {@link http://code.google.com/p/datejs/}
+ * - PHP.JS {@link http://phpjs.org/}
  *
  **
  ***
  * CHANGELOG
  **
+ * v0.5.0-dev, June 29, 2010
+ * - No longer autoloads (caused too many loading sync issues)
+ * - Updated $.console, as google chrome hates function aliasing
+ * - Wrapped all evals in try-catch as google chrome hates evals
+ * - Uses YUI Compressor for jquery smarty. This is due to closure not liking evals.
+ * - No longer uses date.js
+ * 
  * v0.4.3-dev, May 17, 2008
  * - Updated the php.js library to a new version, and now includes minified
  * - Updated the date library to a much newer version (+extras), and is now packed
@@ -82,38 +88,93 @@
 {	// Create our Plugin function, with $ as the argument (we pass the jQuery object over later)
 	// More info: http://docs.jquery.com/Plugins/Authoring#Custom_Alias
 	
-	// Pre-Req
-	$.params_to_json = $.params_to_json || function ( params )
-	{	// Turns a params string or url into an array of params
-		// Adjust
-		params = new String(params);
-		// Remove url if need be
-		params = params.substring(params.indexOf('?')+1);
-		// Change + to %20, the %20 is fixed up later with the decode
-		params = params.replace(/\+/g, '%20');
-		// params = params.substring(params.indexOf('#')+1);
-		// JSONify
-		var split = params.split('&');
-		var json = {};
-		for ( var i = 0, n = split.length; i < n; ++i )
-		{
-			// Adjust
-			var c = split[i] || null;
-			if ( c === null ) { break; }
-			c = c.split('=');
-			if (c === null) { break; }
-			// Get
-			var key = c[0] || null;
-			if (key === null) { break; }
-			var value = c[1] || "";
-			// Fix
-			key = decodeURIComponent(key);
-			value = decodeURIComponent(value);
-			// Set
-			json[key] = value;
+	/**
+	 * Object to Array
+	 * @copyright Benjamin "balupton" Lupton (MIT Licenced)
+	 */
+	$.object_to_array = $.object_to_array || function(obj) {
+		// Prepare
+		var arr = [];
+		// Check
+		if ( typeof obj.length !== "number" ) {
+			return arr;
 		}
-		return json;
-	};
+		// Convert
+	    for(var i = 0; i < obj.length; i++) {
+	        arr.push(obj[i]);
+	    }
+		// Return
+		return arr;
+	}
+	
+	/**
+	 * Console Emulator
+	 * @depends $.object_to_array
+	 * @copyright Benjamin "balupton" Lupton (MIT Licenced)
+	 */
+	if ( typeof $.log === 'undefined' ) {
+		if ( !$.browser.safari && typeof window.console !== 'undefined' && typeof window.console.log === 'function' )
+		{	// Use window.console
+			// Prepare
+			$.console = {};
+			// Log
+			if ( typeof window.console.log !== 'undefined' ) {
+				$.console.log = $.log = function(){
+				    window.console.log.apply(window.console, $.object_to_array(arguments));
+				}
+			}
+			// Debug
+			if ( typeof window.console.debug !== 'undefined' ) {
+				$.console.debug = function(){
+				    window.console.debug.apply(window.console, $.object_to_array(arguments));
+				}
+			} else {
+				$.console.debug = function(){
+				    window.console.log.apply(window.console, $.object_to_array(arguments));
+				}
+			}
+			// Warn
+			if ( typeof window.console.warn !== 'undefined' ) {
+				$.console.warn = function(){
+				    window.console.warn.apply(window.console, $.object_to_array(arguments));
+				}
+			} else {
+				$.console.warn = function(){
+				    window.console.log.apply(window.console, $.object_to_array(arguments));
+				}
+			}
+			// Error
+			if ( typeof window.console.error !== 'undefined' ) {
+				$.console.error = function(){
+				    window.console.error.apply(window.console, $.object_to_array(arguments));
+				}
+			} else {
+				$.console.error = function(){
+				    window.console.log.apply(window.console, $.object_to_array(arguments));
+				}
+			}
+			// Trace
+			if ( typeof window.console.trace !== 'undefined' ) {
+				$.console.trace = function(){
+				    window.console.trace.apply(window.console, $.object_to_array(arguments));
+				}
+			} else {
+				$.console.trace = function(){
+				    window.console.log.apply(window.console, $.object_to_array(arguments));
+				}
+			}
+		}
+		else
+		{	// Don't use anything
+			// Prepare
+			$.console = {};
+			// Assign
+			$.log = $.console.log = $.console.debug = $.console.warn = $.console.trace = function(){};
+			$.console.error = function(){
+				alert("An error has occured. Please use another browser to obtain more detailed information.");
+			}
+		}
+	}
 	
 	// Declare our class
 	$.SmartyClass = function ( )
@@ -159,7 +220,7 @@
 		// Data
 		
 		data: {
-			'build':'0.4.3-dev (May 17, 2008)'
+			'build':'0.5.0-dev (June 29, 2010)'
 		},
 		
 		config: {
@@ -191,7 +252,6 @@
 		// -----------------
 		// Locations
 		
-		base_url:		'',
 		template_url:	'templates/',
 		
 		// -----------------
@@ -346,8 +406,16 @@
 				 * @author   Benjamin "balupton" Lupton, shogo < shogo4405 at gmail dot com>
 				 * @see      http://smarty.php.net/manual/en/language.modifier.date.format.php
 				 */
-				if( !value && !default_date ) { return '!CHECK THE SYNTAX FOR [date_format]!'; }
-				return strftime((format || '%b %e %Y'), (value || default_date));
+				if( !value && !default_date ) {
+					return '!CHECK THE SYNTAX FOR [date_format]!';
+				}
+				var t = (value || default_date);
+				if ( typeof t !== "number" ) {
+					t = strtotime(t, time());
+				}
+				var result = strftime((format || '%b %e %Y'), t);
+				//$.console.debug([format,value,default_date,result,time]);
+				return result;
 			},
 			'default': function (value, default_value)
 			{	//
@@ -430,7 +498,11 @@
 				
 				// Convert values to array if not already
 				if (typeof values === 'string') {
-					values = values.split(eval('/' + delimiter + '/g'));
+					try {
+						values = values.split(eval('/' + delimiter + '/g'));
+					} catch ( e ) {
+						$.console.error(e);
+					}
 				}
 				
 				// Create the data block
@@ -580,7 +652,11 @@
 						
 				// Evaluate the statement
 				// $.Smarty.debug('IF: ['+statements+']', attributes);
-				var result = eval(statements);
+				try {
+					var result = eval(statements);
+				} catch ( e ) {
+					$.console.error(e);
+				}
 				
 				// Figure out what to do
 				var regex;
@@ -688,13 +764,17 @@
 					$.Smarty.foreach[name] = data;
 					// Replace
 					var part = content;
-					$.each(replace, function(replace, find){
-						part = part.replace(eval('/\\{.*?\\$'+find+'.*?\\}/g'), function(match){
-							match = match.match(eval('/(\\{.*?)(\\$'+find+')(.*?\\})/'));
-							match = match[1]+'$smarty.foreach.'+name+'.'+replace+match[3];
-							return match;
+					try {
+						$.each(replace, function(replace, find){
+							part = part.replace(eval('/\\{.*?\\$'+find+'.*?\\}/g'), function(match){
+								match = match.match(eval('/(\\{.*?)(\\$'+find+')(.*?\\})/'));
+								match = match[1]+'$smarty.foreach.'+name+'.'+replace+match[3];
+								return match;
+							});
 						});
-					});
+					} catch ( e ) {
+						$.console.error(e);
+					}
 					// Populate
 					result += part.populate();
 				});
@@ -713,8 +793,12 @@
 				var max = attributes.max || loop.length; // Sets the maximum number of times the section will loop.
 				var show = attributes.show || true; // Determines whether or not to show this section
 				// Prepare
-				var regex_g = eval('/{.*?\\['+name+'\\].*?}/g');
-				var regex = eval('/({.*?\\[)('+name+')(\\].*?})/');
+				try {
+					var regex_g = eval('/{.*?\\['+name+'\\].*?}/g');
+					var regex = eval('/({.*?\\[)('+name+')(\\].*?})/');
+				} catch ( e ) {
+					$.console.error(e);
+				}
 				// Process
 				var result = '';
 				// Cycle through the object
@@ -918,7 +1002,11 @@
 						case (a === '"' && z === '"'):
 						case (a === "'" && z === "'"):
 							// String
-							value = eval(value);
+							try {
+								value = eval(value);
+							} catch ( e ) {
+								$.console.error(e);
+							}
 							break;
 						case (a === '$'):
 							// Variable
@@ -933,13 +1021,21 @@
 								loc = '$.Smarty.data'+loc;
 							}
 							// $.Smarty.debug('value:',value, loc, $.Smarty.data);
-							value = eval(loc);
+							try {
+								value = eval(loc);
+							} catch ( e ) {
+								$.console.error(e);
+							}
 							// $.Smarty.debug(value, $.Smarty.data);
 							break;
 						case (a === '#' && z === "#"):
 							// Config
 							value = value.substring(1,value.length-1); // trim off #s
-							value = eval('$.Smarty.config'+$.Smarty.varloc(value));
+							try {
+								value = eval('$.Smarty.config'+$.Smarty.varloc(value));
+							} catch ( e ) {
+								$.console.error(e);
+							}
 							break;
 						case (typeof $.Smarty.operators[value] !== 'undefined'):
 							// Operator
@@ -1010,35 +1106,40 @@
 			content = content || "";
 			content = String(content);
 			
-			// Check for function
-			var call = '$.Smarty.functions[func]';
-			var ref = eval(call);
-			if ( typeof ref !== 'undefined' )
-			{	// Function exists
-				content = ref(content, attributes);
-			}
-			else
-			{	// Check for modifier
-				call = '$.Smarty.modifiers[func]';
-				ref = eval(call);
+			// Eval wrap
+			try {
+				// Check for function
+				var call = '$.Smarty.functions[func]';
+				var ref = eval(call);
 				if ( typeof ref !== 'undefined' )
-				{	// Modifier exists
-					call += '("'+content.replace(/"/g, '\\"')+'",';
-					for ( index in attributes )
-					{
-						call += 'attributes['+index+'],';
-					}
-					call = call.substring(0,call.length-1);
-					call += ')';
-					
-					// $.Smarty.debug('call: ',call);
-					content = eval(call);
+				{	// Function exists
+					content = ref(content, attributes);
 				}
 				else
-				{	// Nothing exists, so try value
-					// No function because we are just a plain variable
-					content = $.Smarty.value(func); // so set content as the variable
+				{	// Check for modifier
+					call = '$.Smarty.modifiers[func]';
+					ref = eval(call);
+					if ( typeof ref !== 'undefined' )
+					{	// Modifier exists
+						call += '("'+content.replace(/"/g, '\\"')+'",';
+						for ( index in attributes )
+						{
+							call += 'attributes['+index+'],';
+						}
+						call = call.substring(0,call.length-1);
+						call += ')';
+					
+						// $.Smarty.debug('call: ',call);
+						content = eval(call);
+					}
+					else
+					{	// Nothing exists, so try value
+						// No function because we are just a plain variable
+						content = $.Smarty.value(func); // so set content as the variable
+					}
 				}
+			} catch ( e ) {
+				$.console.error(e);
 			}
 			
 			//$.Smarty.debug("call2: ", func, attributes, content);
@@ -1089,13 +1190,23 @@
 				// Get loc
 				var loc = $.Smarty.varloc(key, preloc);
 				var loc2 = '$.Smarty.data'+loc;
-				// Get old value
-				var old_value;
-				try { old_value = eval(loc2) } catch(e) { }
-				// Update value
-				var call = loc2+' = value';
-				// $.Smarty.debug('assign: ', call, value, old_value);
-				eval(call);
+				
+				// Eval wrap
+				try {
+					// Get old value
+					var old_value;
+					old_value = eval(loc2);
+					
+					// Update value
+					var call = loc2+' = value';
+					
+					// $.Smarty.debug('assign: ', call, value, old_value);
+					eval(call);
+				}
+				catch ( e ) {
+					$.console.error(e);
+				}
+				
 				// Call changed
 				$.Smarty.changed(loc, old_value, value);
 			}
@@ -1105,13 +1216,20 @@
 		
 		onchange: function ( key, func )
 		{	// Add onchange handler for key
-			// Get locations
-			var loc = $.Smarty.varloc(key);
-			var loc2 = '$.Smarty.onchange_funcs'+loc;
-			// Create array if need be
-			eval(loc2+' = '+loc2+' || []');
-			// Push onchange functions
-			eval(loc2+'.push(func)');
+			try {
+				// Get locations
+				var loc = $.Smarty.varloc(key);
+				var loc2 = '$.Smarty.onchange_funcs'+loc;
+				// Create array if need be
+				eval(loc2+' = '+loc2+' || []');
+				// Push onchange functions
+				eval(loc2+'.push(func)');
+			}
+			catch ( e ) {
+				// The onchange handler does not exist, this is okay, ignore
+				// This is okay as onchange will fire for everything
+				return;
+			}
 		},
 		
 		changed: function ( key, old_value, new_value )
@@ -1122,7 +1240,10 @@
 			try {
 				// $.Smarty.debug('changed3: loc:', loc);
 				var funcs = eval('$.Smarty.onchange_funcs'+loc);
-			} catch (e) {
+			}
+			catch (e) {
+				// The onchange handler does not exist, this is okay, ignore
+				// This is okay as onchange will fire for everything
 				return;
 			}
 			
@@ -1160,7 +1281,15 @@
 			if ( typeof quote === 'undefined' )
 			{	quote = '"';	}
 			// alert(value);
-			return new String(value).replace(eval('/'+quote+'/g'), '\\'+quote);
+			var result;
+			try {
+				result = new String(value).replace(eval('/'+quote+'/g'), '\\'+quote);
+			}
+			catch (e) {
+				$.console.error(e);
+			}
+			// Return
+			return result;
 		},
 		
 		
@@ -1191,48 +1320,6 @@
 		
 		construct: function ( )
 		{
-			// -------------------
-			// Set baseurl
-			
-			// Get the src of the first script tag that includes our js file (with or without an appendix)
-			var Script = $('script[src*='+'jquery.smarty.js'+']:first');
-			var src = Script.attr('src');
-			var runat = Script.attr('runat');
-			var params = $.params_to_json(src);
-			
-			// Apply params
-			if ( typeof params.options === 'object' ) { $.extend(params, params.options); }
-			this.show_linkback = params.show_linkback || this.show_linkback;
-			this.show_linkback = (this.show_linkback === true || this.show_linkback === 'true') ? true : false;
-			
-			if ( typeof params.baseurl !== 'undefined' )
-			{	// Baseurl is manually specified
-				this.baseurl = params.baseurl;
-			}
-			else
-			{	// The baseurl is the src up until the start of our js file
-				this.baseurl = src.substring(0, src.indexOf('jquery.smarty.js'));	
-			}
-			
-			// -------------------
-			// Import
-			
-			// Add resources to head
-			var resources = [this.baseurl+'php.min.js', this.baseurl+'php.extra.js', this.baseurl+'date-en-AU.js'];
-			var headEl = document.getElementsByTagName('head')[0];
-			for ( var i = 0, n = resources.length; i < n; ++i )
-			{
-				var resource = resources[i];
-				var scriptEl = document.createElement('script');
-				scriptEl.type = 'text/javascript';
-				scriptEl.src = resource;
-				if ( typeof runat !== 'undefined' )
-				{	scriptEl.setAttribute('runat',runat);	}
-				headEl.appendChild(scriptEl);
-			}
-			delete resources;
-			delete headEl;
-			
 			// -------------------
 			// Add Document Ready handler
 			

@@ -5,12 +5,14 @@ MAKE = make $(MAKEFLAGS)
 
 BUILDDIR = ./build
 
-CLOSUREURL = http://closure-compiler.googlecode.com/files/compiler-latest.zip
-CLOSUREDIR = $(BUILDDIR)/closure
-CLOSUREFILE = $(CLOSUREDIR)/compiler.jar
+YUIURL = http://yuilibrary.com/downloads/yuicompressor/yuicompressor-2.4.2.zip
+YUIDIR = $(BUILDDIR)/yui
+YUIFILE = $(YUIDIR)/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar
 
-INJS = ./scripts/jquery.lightbox.js
-OUTJS = ./scripts/jquery.lightbox.min.js
+SMARTY_IN  = ./scripts/jquery.smarty.js
+SMARTY_OUT = ./scripts/jquery.smarty.min.js
+PHPJS_OUT  = ./scripts/php.full.min.js
+OUTJS      = ./scripts/jquery.smarty.all.min.js
 
 all:
 	$(MAKE) build;
@@ -19,12 +21,13 @@ all:
 
 build:
 	$(MAKE) clean;
-	mkdir $(BUILDDIR) $(CLOSUREDIR);
-	cd $(CLOSUREDIR); wget -q $(CLOSUREURL) -O file.zip; tar -xf file.zip;
+	mkdir $(BUILDDIR) $(CLOSUREDIR) $(YUIDIR);
+	cd $(YUIDIR); wget -q $(YUIURL) -O file.zip; tar -xf file.zip;
 	
 clean:
 	rm -Rf ./build;
 	
 compress:
-	java -jar $(CLOSUREFILE) --js_output_file=$(OUTJS) --js=$(INJS);
+	java -jar $(YUIFILE) $(SMARTY_IN) -o $(SMARTY_OUT);
+	cat $(SMARTY_OUT) $(PHPJS_OUT) > $(OUTJS);
 	
