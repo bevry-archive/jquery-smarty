@@ -100,56 +100,56 @@
 			$.console = {};
 			// Log
 			$.console.log = $.log = function(){
-				var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-			    window.console.log.apply(window.console, $.object_to_array(arr));
+				var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+			    window.console.log.apply(window.console, arr);
 			};
 			// Debug
 			if ( typeof window.console.debug !== 'undefined' ) {
 				$.console.debug = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.debug.apply(window.console, $.object_to_array(arr));
+					var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.debug.apply(window.console, arr);
 				};
 			} else {
 				$.console.debug = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.log.apply(window.console, $.object_to_array(arr));
+					var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.log.apply(window.console, arr);
 				};
 			}
 			// Warn
 			if ( typeof window.console.warn !== 'undefined' ) {
 				$.console.warn = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.warn.apply(window.console, $.object_to_array(arr));
+					var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.warn.apply(window.console, arr);
 				};
 			} else {
 				$.console.warn = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.log.apply(window.console, $.object_to_array(arr));
+					var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.log.apply(window.console, arr);
 				};
 			}
 			// Error
 			if ( typeof window.console.error !== 'undefined' ) {
 				$.console.error = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.error.apply(window.console, $.object_to_array(arr));
+					var arr = ['An error has occured:']; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.error.apply(window.console, arr);
+					$.console.trace();
 				};
 			} else {
 				$.console.error = function(){
 					var args = arguments;
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.log.apply(window.console, $.object_to_array(arr));
+					var arr = ['An error has occured:']; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+				    window.console.log.apply(window.console, arr);
+					$.console.trace();
 				};
 			}
 			// Trace
 			if ( typeof window.console.trace !== 'undefined' ) {
 				$.console.trace = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.trace.apply(window.console, $.object_to_array(arr));
+				    window.console.trace();
 				};
 			} else {
 				$.console.trace = function(){
-					var arr = []; for(var i = 0; i < arguments,length; i++) { arr.push(arguments[i]); } return arr;
-				    window.console.log.apply(window.console, $.object_to_array(arr));
+				    window.console.log.apply(window.console, ["Attempted trace... but window.console.trace does not exist."]);
 				};
 			}
 		}
@@ -251,45 +251,48 @@
 		// {([^\s'"}|:]*)(?:[|:]?("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*}(?:(.+?){\/\1})?
 		// {([^\s'"}]*)\s*((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*)}(?:(.+?){\/\1})?
 		search: {
-			//tags:			/{(?:([^\s'"}]+)[\s}])?(?:((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*?)+)})?(?:(.+?){\/\1})?/,
-			tags:			/\{((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)*)\s*((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*)\}(?:(.+?)\{\/\1\})?/,
-			tags_g:			/\{((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)*)\s*((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*)\}(?:(.+?)\{\/\1\})?/g,
-			attributes:		/(?:[\s]*(?:([^=\s]+?)=)?((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"]+)+))+?/,
-			attributes_g:	/(?:[\s]*(?:([^=\s]+?)=)?((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"]+)+))+?/g,
-			modifiers:		/(?:([|:])("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^|:]+)?)+?/,
-			modifiers_g:	/(?:([|:])("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^|:]+)?)+?/g
+			//tags:				/{(?:([^\s'"}]+)[\s}])?(?:((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*?)+)})?(?:(.+?){\/\1})?/,
+			"tags":				/\{((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)*)\s*((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*)\}(?:(.+?)\{\/\1\})?/,
+			"tags_g":			/\{((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)*)\s*((?:(?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"}]+)\s*)*)\}(?:(.+?)\{\/\1\})?/g,
+			"attributes":		/(?:[\s]*(?:([^=\s]+?)=)?((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"]+)+))+?/,
+			"attributes_g":		/(?:[\s]*(?:([^=\s]+?)=)?((?:"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^\s'"]+)+))+?/g,
+			"modifiers":		/(?:([|:])("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^|:]+)?)+?/,
+			"modifiers_g":		/(?:([|:])("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^|:]+)?)+?/g
 		},
 		
 		operators: {
-	        eq: '==',
-	        ne: '!=',
-	        neq: '!=',
-	        gt: '>',
-	        lt: '<',
-	        ge: '>=',
-	        gte: '>=',
-	        le: '<=',
-	        lte: '<=',
-	        // not: '!',
-	        and: '&&',
-	        or: '||',
-	        mod: '%',
+	        "eq":	'==',
+	        "ne":	'!=',
+	        "neq":	'!=',
+	        "gt":	'>',
+	        "lt":	'<',
+	        "ge":	'>=',
+	        "gte":	'>=',
+	        "le":	'<=',
+	        "lte":	'<=',
+	        // not:	'!',
+	        "and":	'&&',
+	        "or":	'||',
+	        "mod":	'%',
 			
-			'==':'==',
-			'===':'===',
-			'!=':'!=',
-			'>':'>',
-			'<':'<',
-			'>=':'>=',
-			'<=':'<=',
-			'!':'!',
-			'%':'%',
+			'==':	'==',
+			'===':	'===',
+			'!=':	'!=',
+			'>':	'>',
+			'<':	'<',
+			'>=':	'>=',
+			'<=':	'<=',
+			'!':	'!',
+			'%':	'%',
 			
-			'(':'(',
-			')':')',
+			'(':	'(',
+			')':	')',
 			
-			'null':null,
-			'undefined':null
+			'0':			0,
+			'false':		false,
+			
+			'null':			null,
+			'undefined':	null
 		},
 		
 		// -----------------
@@ -490,7 +493,7 @@
 					try {
 						values = values.split(eval('/' + delimiter + '/g'));
 					} catch ( e ) {
-						$.console.error(e);
+						$.console.error(493,e);
 					}
 				}
 				
@@ -546,7 +549,7 @@
 				$.Smarty.debug('Smarty Debug: ', output);
 				return '';
 			},
-			'if': function(content, attributes)
+			"if": function(content, attributes)
 			{	// Include and populate a template
 				
 				// Evaluate the IF
@@ -563,7 +566,7 @@
 				attributes = a; delete a;
 				*/
 				
-				// $.Smarty.debug('IF:', content, attributes);
+				// $.Smarty.debug(566, ['IF:', content, attributes]);
 				
 				// Prepare statement
 				var statements = '';
@@ -571,51 +574,64 @@
 				
 				// Build statement
 				var attribute, statement, is, left, middle, right;
-				function reset()
-				{	// ($a / $b) % 2 != 0
+				var reset = function() {
+					// ($a / $b) % 2 != 0
 					statement = '';
 					is = false;
 					left = ''; // ($a / $b)
 					middle = ''; // % 2
 					right = '== 0'; // != 0
-				}	reset();
-				function add()
-				{	//
+				};
+				var add = function () {
+					//
 					statement = is ? '('+statement+left+') '+middle+right : statement;
 					statements += statement;
-				}
-				for ( i in attributes )
-				{	// Cycle through attributes
+				};
+				
+				// Prepare
+				reset();
+				
+				// Cycle through attributes
+				for ( i in attributes ) {
+					if ( $.Smarty.skip(i) ) continue;
 					attribute = attributes[i];
+					if ( $.Smarty.skip(attribute) ) continue;
 					// Figure out what to do
 					switch ( attribute )
 					{
 						case 'is':
 							is = true; // we are a is block
 							break;
+							
 						case 'not':
 							right = right === '== 0' ? '!= 0' : '== 0';
 							break;
+							
 						case 'div':
 							break;
+							
 						case 'even':
 							middle = '% 2 ';
 							break;
+							
 						case 'odd':
 							right = right === '== 0' ? '!= 0' : '== 0';
 							middle = '% 2 ';
 							break;
+							
 						case 'by':
 							left = left+' / ';
 							break;
+							
 						case '||':
 						case '&&':
 							add();
 							statements += attribute+' ';
 							reset();
 							break;
+							
 						default:
-							// $.Smarty.debug(attribute);
+							// $.Smarty.debug(['Atribute:', attribute]);
 							if ( typeof $.Smarty.operators[attribute] !== 'undefined')
 							{	// Operator
 								statement += attribute+' ';
@@ -637,14 +653,15 @@
 							}
 							break;
 					}
-				}	add();
+				}
+				add();
 						
 				// Evaluate the statement
-				// $.Smarty.debug('IF: ['+statements+']', attributes);
+				// $.Smarty.debug(666, ['IF: ['+statements+']', attributes]);
 				try {
 					var result = eval(statements);
 				} catch ( e ) {
-					$.console.error(e);
+					$.console.error(652,e);
 				}
 				
 				// Figure out what to do
@@ -719,7 +736,11 @@
 				if ( typeof from !== 'object' )
 				{	return '';	}
 				// Get length
-				var length = 0; for ( var i in from ) { ++length; }
+				var length = 0;
+				for ( var i in from ) {
+					if ( $.Smarty.skip(i) ) continue;
+					++length;
+				}
 				// Prepare Properties
 				var data_proto = {
 					index:-1,
@@ -762,7 +783,7 @@
 							});
 						});
 					} catch ( e ) {
-						$.console.error(e);
+						$.console.error(770,e);
 					}
 					// Populate
 					result += part.populate();
@@ -786,7 +807,7 @@
 					var regex_g = eval('/{.*?\\['+name+'\\].*?}/g');
 					var regex = eval('/({.*?\\[)('+name+')(\\].*?})/');
 				} catch ( e ) {
-					$.console.error(e);
+					$.console.error(794,e);
 				}
 				// Process
 				var result = '';
@@ -812,6 +833,20 @@
 		
 		// -----------------
 		// Functions
+		
+		skip: function ( attr ) {
+			var result = false;
+			switch ( attr ) {
+				case '':
+				case 'index':
+				case 'input':
+				case '__proto__':
+					// For some reason, Chrome is the only browser which adds these
+					result = true;
+					break;
+			}
+			return result;
+		},
 		
 		fetch: function ( template, template_id /* optional for includes */ )
 		{
@@ -919,6 +954,7 @@
 			var attributes_new = {};
 			for ( index in attributes )
 			{
+				if ( $.Smarty.skip(index) ) continue;
 				var attribute = new String(attributes[index]).match($.Smarty.search.attributes);
 				if ( attribute === null )
 				{	// Continue
@@ -937,9 +973,9 @@
 					value = attribute[2];
 				}
 				// Prepare
-				// $.Smarty.debug("attribute: ", attribute, key, value)
+				//$.Smarty.debug(962, ["attribute: ", value]);
 				value = $.Smarty.value(value);
-				// $.Smarty.debug("attribute: ", attribute, key, value)
+				//$.Smarty.debug(964, ["attribute: ", value]);
 				// Append
 				attributes_new[key] = value;
 			}
@@ -961,6 +997,8 @@
 			var modifiers = []; // [{raw, value, modifier, attributes}]
 			// $.Smarty.debug(value, parts);
 			for (source_part in source_parts) { // Cycle
+				if ( $.Smarty.skip(source_part) ) continue;
+				
 				// Get pieces
 				var source = String(source_parts[source_part]);
 				var parts = source.match($.Smarty.search.modifiers);
@@ -984,7 +1022,7 @@
 					var z = value.charAt(value.length - 1);
 					switch ( true )
 					{
-						case !isNaN(value):
+						case !isNaN(value) || value === '0':
 							// Number
 							value = parseInt(value, 10);
 							break;
@@ -994,7 +1032,7 @@
 							try {
 								value = eval(value);
 							} catch ( e ) {
-								$.console.error(e);
+								$.console.error(1002,e);
 							}
 							break;
 						case (a === '$'):
@@ -1013,7 +1051,7 @@
 							try {
 								value = eval(loc);
 							} catch ( e ) {
-								$.console.error(e);
+								$.console.error(1021,e);
 							}
 							// $.Smarty.debug(value, $.Smarty.data);
 							break;
@@ -1023,7 +1061,7 @@
 							try {
 								value = eval('$.Smarty.config'+$.Smarty.varloc(value));
 							} catch ( e ) {
-								$.console.error(e);
+								$.console.error(1031,e);
 							}
 							break;
 						case (typeof $.Smarty.operators[value] !== 'undefined'):
@@ -1061,7 +1099,13 @@
 			}
 			
 			// Have a result
-			var result = modifiers[0].value || ''; // As this is actually the value we want to modify
+			var result;
+			if ( typeof modifiers[0].value === 'undefined' ) {
+				// if the variable does not actually list in case we were a variable reference
+				result = '';
+			} else {
+				result = modifiers[0].value; // As this is actually the value we want to modify
+			}
 			
 			// Apply Modifiers
 			for ( var i = 1, n = modifiers.length; i < n; ++i )
@@ -1111,8 +1155,8 @@
 					if ( typeof ref !== 'undefined' )
 					{	// Modifier exists
 						call += '("'+content.replace(/"/g, '\\"')+'",';
-						for ( index in attributes )
-						{
+						for ( index in attributes ) {
+							if ( $.Smarty.skip(index) ) continue;
 							call += 'attributes['+index+'],';
 						}
 						call = call.substring(0,call.length-1);
@@ -1128,7 +1172,7 @@
 					}
 				}
 			} catch ( e ) {
-				$.console.error(e);
+				$.console.error(1136,e);
 			}
 			
 			//$.Smarty.debug("call2: ", func, attributes, content);
@@ -1193,7 +1237,7 @@
 					eval(call);
 				}
 				catch ( e ) {
-					$.console.error(e);
+					$.console.error(1201,e);
 				}
 				
 				// Call changed
@@ -1275,7 +1319,7 @@
 				result = new String(value).replace(eval('/'+quote+'/g'), '\\'+quote);
 			}
 			catch (e) {
-				$.console.error(e);
+				$.console.error(1283,e);
 			}
 			// Return
 			return result;
@@ -1285,23 +1329,10 @@
 		// --------------------------------------------------
 		// Things we don't really care about
 		
-		debug: function ( options )
+		debug: function ( )
 		{
-			// Can we debug? - Do we have firebug
-			var con = null;
-			if ( typeof console !== 'undefined' && typeof $.Smarty.debug !== 'undefined' )
-			{	con = console;	}
-			else if ( typeof window.console !== 'undefined' && typeof window.$.Smarty.debug !== 'undefined')
-			{	con = window.console;	}
-			
-			// Do the log
-			if ( con )
-			{	// Do we support arguments?
-				if ( typeof arguments !== 'undefined' && arguments.length > 1)
-				{	con.log(arguments);	return arguments;	}
-				else
-				{	con.log(options);	return options;		}
-			}
+			var arr = []; for(var i = 0; i < arguments.length; i++) { arr.push(arguments[i]); };
+		    $.console.debug.apply($.console, arr);
 		},
 		
 		// --------------------------------------------------
