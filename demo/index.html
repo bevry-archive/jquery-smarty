@@ -28,14 +28,22 @@
 		.last { font-style: italic; }
 		.auto_update { font-size: 14px; font-weight:bold; font-style: italic;  }
 	</style>
+
+	<!-- GetSatisfaction -->
+	<script type="text/javascript" src="http://s3.amazonaws.com/getsatisfaction.com/javascripts/feedback-v2.js"></script> 
+	<script type="text/javascript">/*<![CDATA[*/
+	var GSFN_feedback_widget = new GSFN.feedback_widget({ display: 'overlay', company: 'balupton', placement: 'right', color: '#222', style: 'question' });
+	/*]]>*/</script> 
 </head>
 <body>
 	
 	<div>
 		<h2 class="smarty">Balupton's jQuery Smarty Plugin (jQSmarty) v{$build}</h2>
-		<a href="http://www.balupton.com/sandbox/jquery_smarty/">Normal Preview</a> / <a href="http://balupton.aptanacloud.com/jaxer/jqsmarty.html">Jaxer Preview (down - jaxer was discontinued)</a><br />
 		<a href="http://github.com/balupton/jquery-smarty/downloads">Download</a><br />
-		<a href="http://github.com/balupton/jquery-smarty">Project Page</a><br />
+			<h2><a href="http://www.balupton.com/projects/jquery-smarty" title="Home Page">Home Page</a></h2>
+			<h2><a href="http://github.com/balupton/jquery-smarty" title="Project Page">Project Page</a></h2>
+			<h2><a href="http://getsatisfaction.com/balupton/products/balupton_jquery_smarty" title="Support Page">Support Page</a></h2>
+			<h2><a href="http://github.com/balupton/jquery-smarty/tree/master" title="Source Code">Source Code</a></h2>
 		&nbsp;
 	</div>
 	
@@ -443,5 +451,29 @@
 			});
 		});
 	</script>
+
+	<!-- Google Analytics --> 
+	<script type="text/javascript"> 
+		//<![CDATA[
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		//]]>
+	</script> 
+	<script type="text/javascript" src="./scripts/modernizr-1.5.min.js"></script> 
+	<script type="text/javascript"> 
+		//<![CDATA[
+		try {
+			var pageTracker = _gat._getTracker("UA-4446117-1");
+			pageTracker._initData();
+			pageTracker._setCustomVar(1, "html5.boxshadow", Modernizr.boxshadow ? "yes" : "no" , 2 );
+			pageTracker._setCustomVar(2, "html5.multiplebgs", Modernizr.multiplebgs ? "yes" : "no", 2 );
+			pageTracker._setCustomVar(3, "html5.fontface", Modernizr.fontface ? "yes" : "no", 2 );
+			pageTracker._setCustomVar(4, "html5.csstransitions", Modernizr.csstransitions ? "yes" : "no", 2 );
+			pageTracker._setCustomVar(5, "html5.borderradius", Modernizr.borderradius ? "yes" : "no", 2 );
+			pageTracker._trackPageview();
+		} catch(err) {}
+		//]]>
+	</script>
+	
 </body>
 </html>
