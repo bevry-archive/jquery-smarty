@@ -21,7 +21,7 @@ Licensed under the incredibly [permissive](http://en.wikipedia.org/wiki/Permissi
 
 ## Thanks
 
-- jQuery {@link http://jquery.com/}
-- Smarty {@link http://www.smarty.net/}
-- JSmarty {@link http://code.google.com/p/jsmarty/}
-- PHP.JS {@link http://phpjs.org/}
+- [jQuery](http://jquery.com/)
+- [Smarty](http://www.smarty.net/)
+- [JSmarty](http://code.google.com/p/jsmarty/)
+- [PHP.JS](http://phpjs.org/)
